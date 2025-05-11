@@ -1,19 +1,22 @@
+require("../utils")
 local utf8 = require("utf8")
 
 local Enemy = {}
 Enemy.__index = Enemy
 
 -- Construtor
-function Enemy:new(x, y, r, color, text)
+function Enemy:new(x, y, color, text, speed, damage)
     local obj = {
-        r = r,
-        x = x - r,
-        y = y - r,
+        x = x,
+        y = y,
+        r = 0,
         color = color,
         text = text,
+        speed = speed,
         letters = {},
         current_letter_index = 1,
-        dead = false
+        dead = false,
+        damage = damage
     }
 
     for pos, code in utf8.codes(obj.text) do
@@ -38,21 +41,39 @@ function Enemy:check_letter(key)
 end
 
 function Enemy:textinput(text)
-    self:check_letter(text)
+    if self.x > 0 and self.x < SCREEN_WIDTH and self.y > 0 and self.y < SCREEN_HEIGHT then
+        self:check_letter(text)
+    end
+end
+
+function Enemy:kill()
+    self.dead = true
 end
 
 function Enemy:is_dead()
     return self.dead
 end
 
-function Enemy:update(dt)
+function Enemy:move(playerX, playerY, dt)
+    local diffX = playerX - self.x
+    local diffY = playerY - self.y
     
+    local speedX = diffX/(math.abs(diffX) + math.abs(diffY)) * self.speed
+    local speedY = diffY/(math.abs(diffX) + math.abs(diffY)) * self.speed
+
+    self.x = self.x + speedX
+    self.y = self.y + speedY
+end
+
+function Enemy:update(player, dt)
+    self:move(player.x, player.y, dt)
+    if euclidian_distance(self.x, self.y, player.x, player.y) < player.r + self.r then
+        player:damage(self.damage)
+        self:kill()
+    end
 end
 
 function Enemy:draw()
-    love.graphics.setColor(self.color)
-    love.graphics.circle("fill", self.x, self.y, self.r)
-
     local font = love.graphics.getFont()
     local totalWidth = 0
     local widths = {}
@@ -63,7 +84,10 @@ function Enemy:draw()
         totalWidth = totalWidth + w
     end
 
-    self.r = totalWidth / 1.9
+    self.r = totalWidth / 1.8
+
+    love.graphics.setColor(self.color)
+    love.graphics.circle("fill", self.x, self.y, self.r)
 
     local startX = self.x - totalWidth/2
     local y = self.y - font:getHeight()/2
