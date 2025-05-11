@@ -25,11 +25,11 @@ function Level:new(level, player)
         enemies = {}
     }
 
-    for i = 1, level * 10, 1 do
+    for i = 1, 10 + (level - 1) * 5, 1 do
         local x = random_disjoint((-1) * SCREEN_WIDTH, 0, SCREEN_WIDTH, SCREEN_WIDTH * 2)
         local y = random_disjoint((-1) * SCREEN_HEIGHT, 0, SCREEN_HEIGHT, SCREEN_HEIGHT * 2)
         local text_index = math.random(1, #words)
-        local new_enemy = Enemy:new(x, y, {0, 1, 0}, words[text_index], 1.5, 10)
+        local new_enemy = Enemy:new(x, y, {0, 0, 1}, words[text_index], 1.5, 10)
         table.insert(obj.enemies, new_enemy)
     end
 
@@ -42,6 +42,14 @@ function Level:textinput(key)
         local enemy = self.enemies[i]
         enemy:textinput(key)
     end
+end
+
+function Level:is_complete()
+    return #self.enemies == 0
+end
+
+function Level:gameover()
+    return self.player.health <= 0
 end
 
 function Level:update(dt)

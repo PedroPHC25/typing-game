@@ -31,7 +31,7 @@ end
 function Enemy:check_letter(key)
     local current_letter = self.letters[self.current_letter_index]
     if current_letter.char == key then
-        current_letter.color = {1, 0, 0}
+        current_letter.color = {1, 0, 1}
         if self.current_letter_index == #self.letters then
             self.dead = true
         else
