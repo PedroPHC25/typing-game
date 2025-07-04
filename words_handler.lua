@@ -5,11 +5,11 @@ local function getLengthCategory(word)
     local len = utf8.len(word)
 
     if len <= 5 then
-        return "le5"
+        return 5
     elseif len >= 6 and len <= 10 then
-        return "le10"
+        return 10
     else
-        return "gt10"
+        return 15
     end
 end
 
@@ -38,25 +38,28 @@ end
 
 -- Função para carregar as palavras do arquivo
 function loadWords(filepath)
-    -- Inicializando as 24 tabelas de forma estruturada
+    -- Inicializando as tabelas de palavras dos 12 níveis
     local words = {}
-    local length_categories = {"le5", "le10", "gt10"}
-    local case_categories = {"no_upper", "has_upper"}
-    local accent_categories = {"no_accent", "has_accent"}
-    local hyphen_categories = {"no_hyphen", "has_hyphen"}
+    -- local length_categories = {"le5", "le10", "gt10"}
+    -- local case_categories = {"no_upper", "has_upper"}
+    -- local accent_categories = {"no_accent", "has_accent"}
+    -- local hyphen_categories = {"no_hyphen", "has_hyphen"}
 
-    -- Criando a estrutura aninhada para armazenar as palavras categorizadas
-    for _, len_cat in ipairs(length_categories) do
-        words[len_cat] = {}
-        for _, case_cat in ipairs(case_categories) do
-            words[len_cat][case_cat] = {}
-            for _, accent_cat in ipairs(accent_categories) do
-                words[len_cat][case_cat][accent_cat] = {}
-                for _, hyphen_cat in ipairs(hyphen_categories) do
-                    words[len_cat][case_cat][accent_cat][hyphen_cat] = {}
-                end
-            end
-        end
+    -- for _, len_cat in ipairs(length_categories) do
+    --     words[len_cat] = {}
+    --     for _, case_cat in ipairs(case_categories) do
+    --         words[len_cat][case_cat] = {}
+    --         for _, accent_cat in ipairs(accent_categories) do
+    --             words[len_cat][case_cat][accent_cat] = {}
+    --             for _, hyphen_cat in ipairs(hyphen_categories) do
+    --                 words[len_cat][case_cat][accent_cat][hyphen_cat] = {}
+    --             end
+    --         end
+    --     end
+    -- end
+
+    for i = 1, 12, 1 do
+        words[i] = {}
     end
 
     local file = love.filesystem.newFile(filepath, "r")
@@ -69,10 +72,59 @@ function loadWords(filepath)
             line = line:gsub("^%s*(.-)%s*$", "%1")
             if #line > 0 then
                 local len_cat = getLengthCategory(line)
-                local case_cat = getUppercaseCategory(line) and "has_upper" or "no_upper"
-                local accent_cat = getAccentCategory(line) and "has_accent" or "no_accent"
-                local hyphen_cat = getHyphenCategory(line) and "has_hyphen" or "no_hyphen"
-                table.insert(words[len_cat][case_cat][accent_cat][hyphen_cat], line)
+                local case_cat = getUppercaseCategory(line)
+                local accent_cat = getAccentCategory(line)
+                local hyphen_cat = getHyphenCategory(line)
+
+                if len_cat == 5 and not case_cat and not accent_cat and not hyphen_cat then
+                    for i = 12, 1, -1 do
+                        table.insert(words[i], line)
+                    end
+                elseif len_cat == 10 and not case_cat and not accent_cat and not hyphen_cat then
+                    for i = 12, 2, -1 do
+                        table.insert(words[i], line)
+                    end
+                elseif len_cat == 15 and not case_cat and not accent_cat and not hyphen_cat then
+                    for i = 12, 3, -1 do
+                        table.insert(words[i], line)
+                    end
+                elseif len_cat == 5 and case_cat and not accent_cat and not hyphen_cat then
+                    for i = 12, 4, -1 do
+                        table.insert(words[i], line)
+                    end
+                elseif len_cat == 10 and case_cat and not accent_cat and not hyphen_cat then
+                    for i = 12, 5, -1 do
+                        table.insert(words[i], line)
+                    end
+                elseif len_cat == 15 and case_cat and not accent_cat and not hyphen_cat then
+                    for i = 12, 6, -1 do
+                        table.insert(words[i], line)
+                    end
+                elseif len_cat == 5 and accent_cat and not hyphen_cat then
+                    for i = 12, 7, -1 do
+                        table.insert(words[i], line)
+                    end
+                elseif len_cat == 10 and accent_cat and not hyphen_cat then
+                    for i = 12, 8, -1 do
+                        table.insert(words[i], line)
+                    end
+                elseif len_cat == 15 and accent_cat and not hyphen_cat then
+                    for i = 12, 9, -1 do
+                        table.insert(words[i], line)
+                    end
+                elseif len_cat == 5 and hyphen_cat then
+                    for i = 12, 10, -1 do
+                        table.insert(words[i], line)
+                    end
+                elseif len_cat == 10 and hyphen_cat then
+                    for i = 12, 11, -1 do
+                        table.insert(words[i], line)
+                    end
+                elseif len_cat == 15 and hyphen_cat then
+                    for i = 12, 12, -1 do
+                        table.insert(words[i], line)
+                    end
+                end
             end
         end
     else
