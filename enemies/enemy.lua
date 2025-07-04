@@ -1,11 +1,11 @@
 require("../utils")
 local utf8 = require("utf8")
 
-local Enemy = {}
-Enemy.__index = Enemy
+local TypeEnemy = {}
+TypeEnemy.__index = TypeEnemy
 
 -- Construtor
-function Enemy:new(x, y, color, text, speed, damage)
+function TypeEnemy:new(x, y, color, text, speed, damage)
     local obj = {
         x = x,
         y = y,
@@ -28,7 +28,7 @@ function Enemy:new(x, y, color, text, speed, damage)
     return obj
 end
 
-function Enemy:check_letter(key)
+function TypeEnemy:check_letter(key)
     local current_letter = self.letters[self.current_letter_index]
     if current_letter.char == key then
         current_letter.color = {1, 0, 1}
@@ -40,21 +40,21 @@ function Enemy:check_letter(key)
     end
 end
 
-function Enemy:textinput(text)
+function TypeEnemy:textinput(text)
     if self.x > 0 and self.x < SCREEN_WIDTH and self.y > 0 and self.y < SCREEN_HEIGHT then
         self:check_letter(text)
     end
 end
 
-function Enemy:kill()
+function TypeEnemy:kill()
     self.dead = true
 end
 
-function Enemy:is_dead()
+function TypeEnemy:is_dead()
     return self.dead
 end
 
-function Enemy:move(playerX, playerY, dt)
+function TypeEnemy:move(playerX, playerY, dt)
     local diffX = playerX - self.x
     local diffY = playerY - self.y
     
@@ -65,7 +65,7 @@ function Enemy:move(playerX, playerY, dt)
     self.y = self.y + speedY
 end
 
-function Enemy:update(player, dt)
+function TypeEnemy:update(player, dt)
     self:move(player.x, player.y, dt)
     if euclidian_distance(self.x, self.y, player.x, player.y) < player.r + self.r then
         player:damage(self.damage)
@@ -73,7 +73,7 @@ function Enemy:update(player, dt)
     end
 end
 
-function Enemy:draw()
+function TypeEnemy:draw()
     local font = love.graphics.getFont()
     local totalWidth = 0
     local widths = {}
@@ -101,4 +101,4 @@ function Enemy:draw()
     end
 end
 
-return Enemy
+return TypeEnemy

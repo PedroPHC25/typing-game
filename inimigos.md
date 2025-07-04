@@ -16,8 +16,10 @@
 
 - Letras isoladas (reflexo)
 - Frases
-- Completamento de palavra
-- Operação matemática
-- Perguntas e respostas
 - Morte súbita
 - Caracteres aleatórios
+
+- Recursos extras
+  - Completamento de palavra
+  - Operação matemática
+  - Perguntas e respostas
