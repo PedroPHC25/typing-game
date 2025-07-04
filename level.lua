@@ -19,12 +19,17 @@ function Level:new(level, player)
         enemies = {}
     }
 
-    local current_words = words[math.min(math.floor((level - 1)/3) + 1, 12)]
+    local current_words = words[math.min(math.floor((level - 1)/3) + 1, #words)]
     local num_enemies = 10 + ((level - 1) % 3) * 5
 
+    local centerX = SCREEN_WIDTH / 2
+    local centerY = SCREEN_HEIGHT / 2
+
     for i = 1, num_enemies, 1 do
-        local x = random_disjoint((-1) * SCREEN_WIDTH, 0, SCREEN_WIDTH, SCREEN_WIDTH * 2)
-        local y = random_disjoint((-1) * SCREEN_HEIGHT, 0, SCREEN_HEIGHT, SCREEN_HEIGHT * 2)
+        local angle = math.random() * 2 * math.pi
+        local radius = math.random(600, 2000)
+        local x = centerX + radius * math.cos(angle)
+        local y = centerY + radius * math.sin(angle)
         local text_index = math.random(1, #current_words)
         local new_enemy = TypeEnemy:new(x, y, {0, 0, 1}, current_words[text_index], 1.5, 10)
         table.insert(obj.enemies, new_enemy)
